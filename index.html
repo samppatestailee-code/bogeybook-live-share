@@ -146,6 +146,25 @@
       let isRefreshing = false;
       let hasRenderedSnapshot = false;
 
+      function formatUpdatedAtLabels(root) {
+        root.querySelectorAll("[data-live-updated-at]").forEach((node) => {
+          const rawValue = node.getAttribute("data-live-updated-at");
+          if (!rawValue) {
+            return;
+          }
+
+          const parsed = new Date(rawValue);
+          if (Number.isNaN(parsed.getTime())) {
+            return;
+          }
+
+          node.textContent = parsed.toLocaleString(undefined, {
+            dateStyle: "medium",
+            timeStyle: "short",
+          });
+        });
+      }
+
       function stopPolling() {
         shouldPoll = false;
         if (refreshHandle !== null) {
@@ -190,6 +209,7 @@
 
           app.className = "";
           app.innerHTML = payload.html;
+          formatUpdatedAtLabels(app);
           hasRenderedSnapshot = true;
 
           if (payload.shouldStopPolling) {
@@ -218,3 +238,4 @@
     </script>
   </body>
 </html>
+
