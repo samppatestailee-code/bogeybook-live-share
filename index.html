@@ -146,6 +146,14 @@
       let isRefreshing = false;
       let hasRenderedSnapshot = false;
 
+      function normalizeUpdatedAt(rawValue) {
+        if (!rawValue) {
+          return rawValue;
+        }
+
+        return /(?:Z|[+-]\d\d:\d\d)$/.test(rawValue) ? rawValue : rawValue + "Z";
+      }
+
       function formatUpdatedAtLabels(root) {
         root.querySelectorAll("[data-live-updated-at]").forEach((node) => {
           const rawValue = node.getAttribute("data-live-updated-at");
@@ -153,7 +161,7 @@
             return;
           }
 
-          const parsed = new Date(rawValue);
+          const parsed = new Date(normalizeUpdatedAt(rawValue));
           if (Number.isNaN(parsed.getTime())) {
             return;
           }
@@ -238,4 +246,5 @@
     </script>
   </body>
 </html>
+
 
